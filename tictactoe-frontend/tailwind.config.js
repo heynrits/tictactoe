@@ -25,6 +25,8 @@ export default {
         'hot-pink': '#FE72AD',
 
         'mint': '#94F5C7',
+
+        'pale-red': '#BD502E',
       }
     },
   },
