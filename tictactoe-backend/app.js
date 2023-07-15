@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const db = require('./database/db');
 const gameRouter = require('./routers/gameRouter');
@@ -16,6 +17,7 @@ function main() {
         const app = express();
         
         app.use(bodyParser.json());
+        app.use(cors({ origin: process.env.CLIENT_HOST || 'http://localhost:5173' }));
         app.use('/games', gameRouter);
 
         app.get('/', (req, res) => {
