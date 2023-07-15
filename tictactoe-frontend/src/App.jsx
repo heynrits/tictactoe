@@ -1,4 +1,3 @@
-import {SlActionRedo, SlTrophy} from 'react-icons/sl'
 
 function App() {
 

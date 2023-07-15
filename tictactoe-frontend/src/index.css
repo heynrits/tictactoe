@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.outlined-pill {
+    @apply font-chelsea uppercase bg-sand-yellow text-deep-bronze rounded-full border-2 border-quarter-white drop-shadow-xl;
+}
