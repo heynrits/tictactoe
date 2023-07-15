@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { BsPersonCircle } from "react-icons/bs"
+import { SlTrophy } from "react-icons/sl"
 
 function InGame() {
     const navigate = useNavigate()
@@ -19,6 +21,10 @@ function InGame() {
     const [p2, setP2] = useState('')
     const [p2Wins, setP2Wins] = useState(0)
     const [draws, setDraws] = useState(0)
+
+    const [turn, setTurn] = useState('O')
+    const [winner, setWinner] = useState(null)
+    const [board, setBoard] = useState(initializeBoard())
 
     useEffect(() => {
         // Get game data from the backend
@@ -43,14 +49,157 @@ function InGame() {
         }
     }, [])
 
-    return (
-        <main className="flex flex-col items-center justify-center min-h-screen text-white py-8">
-            <h1 className="text-5xl font-chelsea">Tic-Tac-Toe</h1>
-            <span className="outlined-pill text-sm my-2 px-6 py-2">Let's go!</span>
+    const onCellClick = (e) => {
+        const btn = e.target
+        const i = btn.getAttribute('data-row-index')
+        const j = btn.getAttribute('data-col-index')
 
+        if (board[i][j] !== '') {
+            return
+        }
+
+        // Fill the cell
+        board[i][j] = turn;
+
+        // Check if the game is already over
+        const result = checkWinner(board);
+        if (result !== null) {
+            if (result.player === 'O') {
+                setP1Wins(n => n + 1)
+            } else if (result.player === 'X') {
+                setP2Wins(n => n + 1)
+            } else {
+                setDraws(n => n + 1)
+            }
+
+            setWinner(result)
+        } else {
+            setTurn(turn === 'O' ? 'X' : 'O');
+        }
+    }
+
+    // Returns true if the cell filled by the player is in the winning pattern
+    function highlight(player, i, j) {
+        if (winner !== null && winner.player !== '-' && player === winner.player) {
+            if (winner.match.charAt(0) === 'r') {
+                return winner.match.charAt(1) == i;
+            } else if (winner.match.charAt(0) === 'c') {
+                console.log(winner.match.charAt(1) == j)
+                return winner.match.charAt(1) == j;
+            } else if (winner.match === 'd1') {
+                return i == j;
+            } else if (winner.match === 'd2') {
+                return j == 2-i;
+            }
+        }
+
+        return false;
+    }
+
+    return (
+        <main className="flex flex-col items-center justify-start min-h-screen text-white py-8">
+            <h1 className="mt-8 text-3xl font-chelsea">Tic-Tac-Toe</h1>
+            <span className="outlined-pill text-xs my-2 px-6 py-2">
+                Round #{p1Wins+p2Wins+draws+1}
+            </span>
+
+            <span className="inline-block pt-4 pb-4">
+                {
+                    winner === null ? 
+                    `${turn === 'O' ? p1 : p2 }'s (${turn}) Turn` : (
+                        winner.player !== '-' ? `${winner.player === 'O' ? p1 : p2} (${winner.player}) Won!` : 'Draw!'
+                    )
+                }
+                
+            </span>
             
+            <div className="grid grid-cols-3 gap-3 w-full max-w-[400px]">
+                {
+                    board.map((row, i) => (
+                      row.map((cell, j) => (
+                        <button key={`${i},${j}`} className={`font-flower text-8xl border-[5px] border-white bg-[rgba(255,255,255,0.75)] ${highlight(cell, i, j) ? 'disabled:bg-mint' : 'disabled:bg-[rgba(220,220,220,0.75)]'} ${winner !== null && !highlight(cell, i, j) ? 'disabled:opacity-75' : ''} w-full aspect-square rounded-lg enabled:hover:bg-sand-yellow ${cell === 'O' ? 'text-dodger-blue' : 'text-hot-pink'} disabled:cursor-not-allowed`} data-row-index={i} data-col-index={j} onClick={onCellClick} disabled={cell !== '' || winner !== null}>
+                            {cell}
+                        </button>
+                      ))
+                    ))
+                }
+            </div>
+
+            {/* Player 1 */}
+            <div className={`fixed w-[230px] left-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tr-3xl border-t-4 border-r-4 border-dull-blue ${winner !== null && winner.player === 'O' ? 'bg-mint border-deep-purple' : (winner !== null || turn !== 'O' ? 'opacity-50' : '')}`}>
+                <BsPersonCircle size={40} />
+                <div>
+                    <div>{p1} (O)</div>
+                    <div className="flex items-center gap-1">
+                        <SlTrophy size={20} /> <span className="text-3xl">{p1Wins}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className={`fixed bottom-4 left-1/2 translate-x-[-50%] py-0.5 px-3 ${winner && winner.player === '-' ? 'opacity-100 bg-mint' : 'opacity-60 bg-white'} flex flex-col items-center text-slate-blue rounded-lg`}>
+                <span className="font-sans uppercase text-sm">Draws</span>
+                <span className="font-chelsea text-2xl mt-[-8px]">{draws}</span>
+            </div>
+
+            {/* Player 2 */}
+            <div className={`fixed w-[230px] right-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tl-3xl border-t-4 border-l-4 border-dull-blue ${winner !== null && winner.player === 'X' ? 'bg-mint border-deep-purple' : (winner !== null || turn !== 'X' ? 'opacity-50' : '')}`}>
+                <BsPersonCircle size={40} />
+                <div>
+                    <div>{p2} (X)</div>
+                    <div className="flex items-center gap-1">
+                        <SlTrophy size={20} /> <span className="text-3xl">{p2Wins}</span>
+                    </div>
+                </div>
+            </div>
         </main>
     )
+}
+
+function initializeBoard() {
+    const board = []
+    for (let i = 0; i < 3; i++) {
+        const row = Array(3).fill('');
+        board.push(row);
+    }
+
+    return board;
+}
+
+function checkWinner(board) {
+    // Check for a horizontal match
+    for (let i = 0; i < 3; i++) {
+        if (board[i][0] !== '' && board[i][0] === board[i][1] && board[i][0] === board[i][2]) {
+            return { player: board[i][0], match: `r${i}`}
+        }
+    }
+
+    // Check for a vertical match
+    for (let j = 0; j < 3; j++) {
+        if (board[0][j] !== '' && board[0][j] === board[1][j] && board[0][j] === board[2][j]) {
+            return { player: board[0][j], match: `c${j}`}
+        }
+    }
+
+    // Check for a diagonal match
+    if (board[0][0] !== '' && board[0][0] === board[1][1] && board[0][0] === board[2][2]) {
+        return { player: board[0][0], match: 'd1' }
+    }
+    if (board[0][2] !== '' && board[0][2] === board[1][1] && board[0][2] === board[2][0]) {
+        return { player: board[0][2], match: 'd2' }
+    }
+
+    let filled = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            filled += Number(board[i][j] !== '')
+        }
+    }
+
+    if (filled === 9) { // draw
+        return { player: '-' }
+    }
+    
+    return null
 }
 
 export default InGame

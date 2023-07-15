@@ -24,9 +24,11 @@ export default {
         'dodger-blue': '#4F75FC',
         'hot-pink': '#FE72AD',
 
-        'mint': '#94F5C7',
+        'mint': '#9FD6D1',
 
         'pale-red': '#BD502E',
+        'dull-blue': '#B8B7E5',
+        'deep-purple': '#6260B4'
       }
     },
   },
