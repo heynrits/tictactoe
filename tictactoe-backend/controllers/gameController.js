@@ -3,7 +3,7 @@ const GameModel = require('../schemas/game');
 
 const getAllGameData = async (req, res) => {
     try {
-        const games = await GameModel.find();
+        const games = await GameModel.find().sort({ updatedAt: -1 });
         return res.json(games);
     } catch (err) {
         console.log('[API] Error getting all game data.');
@@ -33,7 +33,6 @@ const getGameData = async (req, res) => {
 };
 
 const saveGameData = async (req, res) => {
-    console.log(req.body)
     const result = validationResult(req);
     const gameData = matchedData(req);
 
