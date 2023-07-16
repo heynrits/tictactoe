@@ -167,8 +167,8 @@ function InGame() {
                 {
                     board.map((row, i) => (
                       row.map((cell, j) => (
-                        <button key={`${i},${j}`} className={`font-flower text-8xl border-[5px] border-white bg-[rgba(255,255,255,0.75)] ${highlight(cell, i, j) ? 'disabled:bg-mint' : 'disabled:bg-[rgba(220,220,220,0.75)]'} ${winner !== null && !highlight(cell, i, j) ? 'disabled:opacity-75' : ''} w-full aspect-square rounded-lg enabled:hover:bg-sand-yellow ${cell === 'O' ? 'text-dodger-blue' : 'text-hot-pink'} disabled:cursor-not-allowed`} data-row-index={i} data-col-index={j} onClick={onCellClick} disabled={cell !== '' || winner !== null}>
-                            {cell}
+                        <button key={`${i},${j}`} className={`font-flower text-8xl border-[5px] border-white bg-[rgba(255,255,255,0.75)] ${highlight(cell, i, j) ? 'disabled:bg-mint' : 'disabled:bg-[rgba(220,220,220,0.75)]'} ${winner !== null && !highlight(cell, i, j) ? 'disabled:opacity-75' : ''} w-full aspect-square rounded-lg enabled:hover:bg-sand-yellow ${cell === 'O' ? 'text-dodger-blue' : 'text-hot-pink'} ${cell === '' ? 'text-transparent enabled:hover:text-quarter-white' : ''} disabled:cursor-not-allowed`} data-row-index={i} data-col-index={j} onClick={onCellClick} disabled={cell !== '' || winner !== null}>
+                            {cell || turn}
                         </button>
                       ))
                     ))
