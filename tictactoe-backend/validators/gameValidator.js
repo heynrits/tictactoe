@@ -18,6 +18,9 @@ const gameDataValidator = {
     drawCount: {
         isNumeric: true,
     },
+    modeAI: {
+        isBoolean: true,
+    }
 };
 
 const savedGameDataValidator = {

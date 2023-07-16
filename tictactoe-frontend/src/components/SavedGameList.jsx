@@ -93,14 +93,14 @@ function ListItem({ game, onDelete }) {
 
             <div className="relative" onContextMenu={handleContextMenu}>
                 <div className="bg-white text-slate-blue border-4 border-white py-1 px-3 mt-2 rounded-2xl flex justify-between font-chelsea hover:cursor-pointer hover:border-4 hover:border-sand-yellow" onClick={() => navigate(`/play?gameId=${game._id}`)}>
-                    <LiPlayerInfo mark="O" name={game.p1.name} wins={game.p1.winCount} />
+                    <LiPlayerInfo mark="X" name={game.p1.name} wins={game.p1.winCount} />
                     <div>
                         <span className="text-2xl">vs</span>
                         <div className="flex items-center gap-1 relative">
                             <span className="text-lg absolute ml-1 opacity-80">/</span><SlTrophy /> {game.drawCount}
                         </div>
                     </div>
-                    <LiPlayerInfo mark="X" name={game.p2.name} wins={game.p2.winCount} />
+                    <LiPlayerInfo mark="O" name={game.p2.name} wins={game.p2.winCount} isAI={game.modeAI} />
                 </div>
                 {showMenu && (
                     <div className="absolute bottom-[-50%] right-0 w-40 bg-white border border-gray-300 shadow" ref={menuRef}>
@@ -120,13 +120,13 @@ function ListItem({ game, onDelete }) {
 /**
  * List item player information
  */
-function LiPlayerInfo({ mark, name, wins }) {
+function LiPlayerInfo({ mark, name, wins, isAI }) {
     return (
         <div className="w-[150px] flex items-center gap-4">
             <span className="text-4xl">{mark}</span>
             <div className="">
                 <div className="flex items-center gap-2 truncate">
-                    <SlUser /> {name}
+                    <SlUser /> {name} {isAI ? <span className="outlined-pill !font-sans !drop-shadow-none !rounded-lg text-xs py-0 px-2">AI</span> : null }
                 </div>
                 <div className="flex items-center gap-2">
                     <SlTrophy /> {wins}

@@ -10,6 +10,7 @@ const GameSchema = new mongoose.Schema({
         winCount: Number,
     },
     drawCount: Number,
+    modeAI: Boolean,
 }, {
     timestamps: true
 });

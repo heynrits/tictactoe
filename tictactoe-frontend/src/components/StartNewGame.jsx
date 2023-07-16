@@ -1,9 +1,12 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { SlUser } from "react-icons/sl"
+import Checkbox from "./Checkbox"
 
 function StartNewGame({ onHomeClick }) {
     const navigate = useNavigate()
+
+    const [modeAI, setModeAI] = useState(false);
 
     const [p1, setP1] = useState('')
     const [p2, setP2] = useState('')
@@ -21,13 +24,16 @@ function StartNewGame({ onHomeClick }) {
 
     const onStartGameClick = () => {
         setP1Warning(p1.length === 0 || p1 === p2)
-        setP2Warning(p2.length === 0 || p1 === p2)
+        if (!modeAI) {
+            setP2Warning(p2.length === 0 || p1 === p2)
+        }
+
         
-        if (p1.length === 0 || p2.length === 0 || p1 === p2) {
+        if (p1.length === 0 || (!modeAI && (p2.length === 0 || p1 === p2))) {
             return
         }
         
-        navigate('/play', { state: { p1, p2 } })
+        navigate('/play', { state: { p1, p2, modeAI } })
     }
 
     return (
@@ -43,14 +49,24 @@ function StartNewGame({ onHomeClick }) {
                     <input type="text" name="p1" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p1Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
                 </div>
 
-                <span className="inline-block my-6 font-chelsea">vs</span>
+                {
+                    modeAI ? null : (
+                        <>
+                            <span className="inline-block my-6 font-chelsea">vs</span>
 
-                <div className="flex-1">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                        <SlUser /> Player 2 (X)
-                    </div>
-                    <input type="text" name="p2" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p2Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
-                </div>
+                            <div className="flex-1">
+                                <div className="flex items-center justify-center gap-2 mb-2">
+                                    <SlUser /> Player 2 (X)
+                                </div>
+                                <input type="text" name="p2" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p2Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
+                            </div>
+                        </>
+                    )
+                }
+            </div>
+
+            <div>
+                <Checkbox state={[modeAI, setModeAI]} label="Play with AI" />
             </div>
 
             <div className="mt-10 flex flex-col items-center gap-5">

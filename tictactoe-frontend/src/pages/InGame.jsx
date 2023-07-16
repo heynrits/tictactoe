@@ -4,6 +4,8 @@ import { BsPersonCircle } from "react-icons/bs"
 import { SlTrophy } from "react-icons/sl"
 import axios from "axios";
 import LoadingIndicator from "../components/LoadingIndicator";
+import value from "../functions/minmax";
+import { deepClone2DArray } from "../functions/helper";
 
 function InGame() {
     const navigate = useNavigate()
@@ -18,6 +20,7 @@ function InGame() {
     const newData = location.state
 
     // current game state
+    const [modeAI, setModeAI] = useState(false)
     const [gId, setGId] = useState('')
     const [p1, setP1] = useState('')
     const [p1Wins, setP1Wins] = useState(0)
@@ -25,7 +28,7 @@ function InGame() {
     const [p2Wins, setP2Wins] = useState(0)
     const [draws, setDraws] = useState(0)
 
-    const [turn, setTurn] = useState('O')
+    const [turn, setTurn] = useState('X')
     const [winner, setWinner] = useState(null)
     const [board, setBoard] = useState(initializeBoard())
 
@@ -36,8 +39,9 @@ function InGame() {
         if (gameId !== null) {
             axios.get(`/games/${gameId}`)
                 .then(res => {
-                    const { p1, p2, drawCount } = res.data
+                    const { p1, p2, drawCount, modeAI } = res.data
                     setGId(gameId)
+                    setModeAI(modeAI)
                     setP1(p1.name)
                     setP1Wins(p1.winCount)
                     setP2(p2.name)
@@ -50,7 +54,8 @@ function InGame() {
                 })
         } else if (newData !== null) { // new game
             setP1(newData.p1)
-            setP2(newData.p2)
+            setP2(newData.modeAI ? 'COM' : newData.p2)
+            setModeAI(newData.modeAI)
             setLoading(false)
         } else { // go back to homepage
             navigate('/')
@@ -67,14 +72,16 @@ function InGame() {
         }
 
         // Fill the cell
-        board[i][j] = turn;
+        const b = deepClone2DArray(board)
+        b[i][j] = turn
+        setBoard(b)
 
         // Check if the game is already over
-        const result = checkWinner(board);
+        const result = checkWinner(b);
         if (result !== null) {
-            if (result.player === 'O') {
+            if (result.player === 'X') {
                 setP1Wins(n => n + 1)
-            } else if (result.player === 'X') {
+            } else if (result.player === 'O') {
                 setP2Wins(n => n + 1)
             } else {
                 setDraws(n => n + 1)
@@ -82,12 +89,39 @@ function InGame() {
 
             setWinner(result)
         } else {
-            setTurn(turn === 'O' ? 'X' : 'O');
+            if (modeAI) {
+                onAITurn(b)
+            } else {
+                setTurn(turn === 'X' ? 'O' : 'X');
+            }
+        }
+    }
+
+    function onAITurn(board) {
+        const [action, _] = value({ board, type: 'max'})
+        console.log({action, _})
+        const [i, j] = action
+
+        const b = deepClone2DArray(board)
+        b[i][j] = 'O'
+        setBoard(b)
+        // Check if the game is already over
+        const result = checkWinner(b);
+        if (result !== null) {
+            if (result.player === 'X') {
+                setP1Wins(n => n + 1)
+            } else if (result.player === 'O') {
+                setP2Wins(n => n + 1)
+            } else {
+                setDraws(n => n + 1)
+            }
+
+            setWinner(result)
         }
     }
 
     const onNewRoundClick = () => {
-        setTurn('O')
+        setTurn('X')
         setWinner(null)
         setBoard(initializeBoard())
     }
@@ -102,7 +136,8 @@ function InGame() {
                 "name": p2,
                 "winCount": p2Wins
             },
-            "drawCount": draws
+            "drawCount": draws,
+            "modeAI": modeAI,
         }
 
         setLoading(true)
@@ -155,8 +190,8 @@ function InGame() {
             <span className="inline-block pt-4 pb-4">
                 {
                     winner === null ? 
-                    `${turn === 'O' ? p1 : p2 }'s (${turn}) Turn` : (
-                        winner.player !== '-' ? `${winner.player === 'O' ? p1 : p2} (${winner.player}) Won!` : 'Draw!'
+                    `${turn === 'X' ? p1 : p2 }'s (${turn}) Turn` : (
+                        winner.player !== '-' ? `${winner.player === 'X' ? p1 : p2} (${winner.player}) Won!` : 'Draw!'
                     )
                 }
                 
@@ -186,10 +221,10 @@ function InGame() {
             }
 
             {/* Player 1 */}
-            <div className={`fixed w-[230px] left-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tr-3xl border-t-4 border-r-4 border-dull-blue ${winner !== null && winner.player === 'O' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'O' ? 'opacity-50' : '')}`}>
+            <div className={`fixed w-[230px] left-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tr-3xl border-t-4 border-r-4 border-dull-blue ${winner !== null && winner.player === 'X' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'X' ? 'opacity-50' : '')}`}>
                 <BsPersonCircle size={40} />
                 <div>
-                    <div>{p1} (O)</div>
+                    <div>{p1} (X)</div>
                     <div className="flex items-center gap-1">
                         <SlTrophy size={20} /> <span className="text-3xl">{p1Wins}</span>
                     </div>
@@ -202,10 +237,10 @@ function InGame() {
             </div>
 
             {/* Player 2 */}
-            <div className={`fixed w-[230px] right-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tl-3xl border-t-4 border-l-4 border-dull-blue ${winner !== null && winner.player === 'X' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'X' ? 'opacity-50' : '')}`}>
+            <div className={`fixed w-[230px] right-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tl-3xl border-t-4 border-l-4 border-dull-blue ${winner !== null && winner.player === 'O' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'O' ? 'opacity-50' : '')}`}>
                 <BsPersonCircle size={40} />
                 <div>
-                    <div>{p2} (X)</div>
+                    <div>{p2} (O)</div>
                     <div className="flex items-center gap-1">
                         <SlTrophy size={20} /> <span className="text-3xl">{p2Wins}</span>
                     </div>
