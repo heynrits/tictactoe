@@ -1,0 +1,15 @@
+{
+  "name": "tictactoe",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install-server": "cd tictactoe-backend && npm install",
+    "start-server": "cd tictactoe-backend && node app.js",
+    "install-client": "cd tictactoe-frontend && npm install",
+    "build-client": "cd tictactoe-frontend && npm run build",
+    "start-client": "cd tictactoe-frontend && npm run preview"
+  },
+  "author": "John Heinrich Austria",
+  "license": "ISC"
+}
