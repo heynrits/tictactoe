@@ -20,10 +20,10 @@ function StartNewGame({ onHomeClick }) {
     }
 
     const onStartGameClick = () => {
-        setP1Warning(p1.length === 0)
-        setP2Warning(p2.length === 0)
+        setP1Warning(p1.length === 0 || p1 === p2)
+        setP2Warning(p2.length === 0 || p1 === p2)
         
-        if (p1.length === 0 || p2.length === 0) {
+        if (p1.length === 0 || p2.length === 0 || p1 === p2) {
             return
         }
         
@@ -40,7 +40,7 @@ function StartNewGame({ onHomeClick }) {
                     <div className="flex items-center justify-center gap-2 mb-2">
                         <SlUser /> Player 1 (O)
                     </div>
-                    <input type="text" name="p1" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 border-${p1Warning ? 'pale-red' : 'white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
+                    <input type="text" name="p1" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p1Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
                 </div>
 
                 <span className="inline-block my-6 font-chelsea">vs</span>
@@ -49,7 +49,7 @@ function StartNewGame({ onHomeClick }) {
                     <div className="flex items-center justify-center gap-2 mb-2">
                         <SlUser /> Player 2 (X)
                     </div>
-                    <input type="text" name="p2" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 border-${p2Warning ? 'pale-red' : 'white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
+                    <input type="text" name="p2" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p2Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
                 </div>
             </div>
 
