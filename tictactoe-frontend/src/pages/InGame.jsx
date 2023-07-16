@@ -126,7 +126,7 @@ function InGame() {
             </div>
 
             {/* Player 1 */}
-            <div className={`fixed w-[230px] left-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tr-3xl border-t-4 border-r-4 border-dull-blue ${winner !== null && winner.player === 'O' ? 'bg-mint border-deep-purple' : (winner !== null || turn !== 'O' ? 'opacity-50' : '')}`}>
+            <div className={`fixed w-[230px] left-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tr-3xl border-t-4 border-r-4 border-dull-blue ${winner !== null && winner.player === 'O' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'O' ? 'opacity-50' : '')}`}>
                 <BsPersonCircle size={40} />
                 <div>
                     <div>{p1} (O)</div>
@@ -136,13 +136,13 @@ function InGame() {
                 </div>
             </div>
 
-            <div className={`fixed bottom-4 left-1/2 translate-x-[-50%] py-0.5 px-3 ${winner && winner.player === '-' ? 'opacity-100 bg-mint' : 'opacity-60 bg-white'} flex flex-col items-center text-slate-blue rounded-lg`}>
+            <div className={`fixed bottom-4 left-1/2 translate-x-[-50%] py-0.5 px-3 ${winner && winner.player === '-' ? 'opacity-100 !bg-mint !border-deep-purple' : 'opacity-60 bg-white'} flex flex-col items-center text-slate-blue rounded-lg`}>
                 <span className="font-sans uppercase text-sm">Draws</span>
                 <span className="font-chelsea text-2xl mt-[-8px]">{draws}</span>
             </div>
 
             {/* Player 2 */}
-            <div className={`fixed w-[230px] right-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tl-3xl border-t-4 border-l-4 border-dull-blue ${winner !== null && winner.player === 'X' ? 'bg-mint border-deep-purple' : (winner !== null || turn !== 'X' ? 'opacity-50' : '')}`}>
+            <div className={`fixed w-[230px] right-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tl-3xl border-t-4 border-l-4 border-dull-blue ${winner !== null && winner.player === 'X' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'X' ? 'opacity-50' : '')}`}>
                 <BsPersonCircle size={40} />
                 <div>
                     <div>{p2} (X)</div>
