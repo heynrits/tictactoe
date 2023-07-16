@@ -34,7 +34,7 @@ function ListItem({ game, isFirst }) {
     return (
         <div className={`w-full ${isFirst ? 'mt-8' : ''}`}>
             <div className="flex items-center gap-2">
-                <SlClock /> {dayjs(game.updatedAt).format("MMM D, YYYY h:MM A")}
+                <SlClock /> {dayjs(game.updatedAt).format("MMM D, YYYY h:mm A")}
             </div>
 
             <div className="bg-white text-slate-blue py-2 px-4 mt-2 rounded-2xl flex justify-between font-chelsea">
