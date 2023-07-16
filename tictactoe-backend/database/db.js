@@ -5,7 +5,7 @@ const connect = async () => {
     const DB_NAME = process.env.DB_NAME || 'test';
 
     let dbConnectionStr = `${DB_HOST}${DB_NAME}`;
-    if (ENVIRONMENT === 'production') {
+    if (process.env.NODE_ENV === 'production') {
         const DB_CLUSTER = process.env.DB_CLUSTER;
         const DB_NAME = process.env.DB_NAME;
         const DB_USERNAME = process.env.DB_USERNAME;
