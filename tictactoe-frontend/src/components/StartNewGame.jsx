@@ -31,7 +31,7 @@ function StartNewGame({ onHomeClick }) {
     }
 
     return (
-        <div className="my-8 w-10/12 max-w-xl text-center">
+        <div className="my-8 w-10/12 max-w-xl text-center animate-slide-left">
             <div className="font-chelsea">Start a New Game</div>
             <p className="font-sans">Please enter your names...</p>
             

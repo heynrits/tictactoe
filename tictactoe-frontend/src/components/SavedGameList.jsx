@@ -17,7 +17,7 @@ function SavedGameList() {
     }, [])
 
     return (
-        <div className="my-8 w-10/12 max-w-xl text-center">
+        <div className="my-8 w-10/12 max-w-xl text-center animate-slide-right">
 
             <div className="font-chelsea mb-4">Load Game</div>
 

@@ -125,7 +125,6 @@ function InGame() {
             if (winner.match.charAt(0) === 'r') {
                 return winner.match.charAt(1) == i;
             } else if (winner.match.charAt(0) === 'c') {
-                console.log(winner.match.charAt(1) == j)
                 return winner.match.charAt(1) == j;
             } else if (winner.match === 'd1') {
                 return i == j;
@@ -147,7 +146,7 @@ function InGame() {
     }
 
     return (
-        <main className="flex flex-col items-center justify-start min-h-screen text-white py-8">
+        <main className="flex flex-col items-center justify-start min-h-screen text-white py-8 animate-slide-up">
             <h1 className="mt-8 text-3xl font-chelsea">Tic-Tac-Toe</h1>
             <span className="outlined-pill text-xs my-2 px-6 py-2">
                 Round #{roundNumber}
@@ -163,8 +162,8 @@ function InGame() {
                 
             </span>
             
-            <div className={`w-full h-[400px] flex items-center justify-center ${winner !== null ? 'h-[200px]  scale-50 mb-8' : ''}`}>
-            <div className="grid grid-cols-3 gap-3 w-full max-w-[400px]">
+            <div className={`w-full h-[400px] flex items-center justify-center ${winner !== null ? '!h-[200px] mb-8' : ''} transition-all duration-300 ease-in-out`}>
+            <div className={`grid grid-cols-3 gap-3 w-full max-w-[400px] ${winner ? 'scale-50' : ''} transition-all duration-300 ease-in-out`}>
                 {
                     board.map((row, i) => (
                       row.map((cell, j) => (

@@ -29,6 +29,25 @@ export default {
         'pale-red': '#BD502E',
         'dull-blue': '#B8B7E5',
         'deep-purple': '#6260B4'
+      },
+      animation: {
+        'slide-right': 'slide-right 100ms ease-out 1',
+        'slide-left': 'slide-left 100ms ease-out 1',
+        'slide-up': 'slide-up 100ms ease-out 1',
+      },
+      keyframes: {
+        'slide-right': {
+          '0%': { transform: 'translateX(-20%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        'slide-left': {
+          '0%': { transform: 'translateX(20%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        },
+        'slide-up': {
+          '0%': { transform: 'translateY(20%)', opacity: '0' },
+          '100%': { transform: 'translateX(0)', opacity: '1' },
+        }
       }
     },
   },
