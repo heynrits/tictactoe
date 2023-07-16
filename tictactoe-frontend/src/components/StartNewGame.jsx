@@ -44,7 +44,7 @@ function StartNewGame({ onHomeClick }) {
             <div className="mt-16 mb-20 flex justify-between gap-4 items-start">
                 <div className="flex-1">
                     <div className="flex items-center justify-center gap-2 mb-2">
-                        <SlUser /> Player 1 (O)
+                        <SlUser /> Player 1 (X)
                     </div>
                     <input type="text" name="p1" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p1Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
                 </div>
@@ -56,7 +56,7 @@ function StartNewGame({ onHomeClick }) {
 
                             <div className="flex-1">
                                 <div className="flex items-center justify-center gap-2 mb-2">
-                                    <SlUser /> Player 2 (X)
+                                    <SlUser /> Player 2 (O)
                                 </div>
                                 <input type="text" name="p2" className={`block w-full bg-[rgba(255,255,255,0.75)] border-2 ${p2Warning ? 'border-pale-red' : 'border-white'} rounded-lg p-3 text-black`} onChange={onInputChange} />
                             </div>
