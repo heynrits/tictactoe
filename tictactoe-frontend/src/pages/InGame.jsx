@@ -2,9 +2,12 @@ import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { BsPersonCircle } from "react-icons/bs"
 import { SlTrophy } from "react-icons/sl"
+import axios from "axios";
+import LoadingIndicator from "../components/LoadingIndicator";
 
 function InGame() {
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(true);
     
     // for existing game data
     const [searchParams] = useSearchParams()
@@ -26,17 +29,21 @@ function InGame() {
     const [winner, setWinner] = useState(null)
     const [board, setBoard] = useState(initializeBoard())
 
+    const roundNumber = p1Wins + p2Wins + draws + Number(winner === null)
+
     useEffect(() => {
         // Get game data from the backend
         if (gameId !== null) {
             axios.get(`/games/${gameId}`)
                 .then(res => {
                     const { p1, p2, drawCount } = res.data
+                    setGId(gameId)
                     setP1(p1.name)
                     setP1Wins(p1.winCount)
                     setP2(p2.name)
                     setP2Wins(p2.winCount)
                     setDraws(drawCount)
+                    setLoading(false)
                 })
                 .catch(err => {
                     navigate('/')
@@ -44,6 +51,7 @@ function InGame() {
         } else if (newData !== null) { // new game
             setP1(newData.p1)
             setP2(newData.p2)
+            setLoading(false)
         } else { // go back to homepage
             navigate('/')
         }
@@ -78,6 +86,39 @@ function InGame() {
         }
     }
 
+    const onNewRoundClick = () => {
+        setTurn('O')
+        setWinner(null)
+        setBoard(initializeBoard())
+    }
+
+    const onQuitClick = () => {
+        const gameState = {
+            "p1": {
+                "name": p1,
+                "winCount": p1Wins
+            },
+            "p2": {
+                "name": p2,
+                "winCount": p2Wins
+            },
+            "drawCount": draws
+        }
+
+        setLoading(true)
+        if (gId !== '') {
+            axios.put(`/games/${gId}`, gameState)
+                .then(() => {
+                    navigate('/')
+                })
+        } else {
+            axios.post('/games', gameState)
+                .then(() => {
+                    navigate('/')
+                })
+        }
+    }
+
     // Returns true if the cell filled by the player is in the winning pattern
     function highlight(player, i, j) {
         if (winner !== null && winner.player !== '-' && player === winner.player) {
@@ -96,11 +137,20 @@ function InGame() {
         return false;
     }
 
+    if (loading) {
+        return (
+            <main className="flex flex-col items-center justify-center min-h-screen text-white py-8">
+                <h1 className="text-3xl font-chelsea mb-8">Tic-Tac-Toe</h1>
+                <LoadingIndicator color="white" text="Please wait..." />
+            </main>
+        )
+    }
+
     return (
         <main className="flex flex-col items-center justify-start min-h-screen text-white py-8">
             <h1 className="mt-8 text-3xl font-chelsea">Tic-Tac-Toe</h1>
             <span className="outlined-pill text-xs my-2 px-6 py-2">
-                Round #{p1Wins+p2Wins+draws+1}
+                Round #{roundNumber}
             </span>
 
             <span className="inline-block pt-4 pb-4">
@@ -113,6 +163,7 @@ function InGame() {
                 
             </span>
             
+            <div className={`w-full h-[400px] flex items-center justify-center ${winner !== null ? 'h-[200px]  scale-50 mb-8' : ''}`}>
             <div className="grid grid-cols-3 gap-3 w-full max-w-[400px]">
                 {
                     board.map((row, i) => (
@@ -124,6 +175,16 @@ function InGame() {
                     ))
                 }
             </div>
+            </div>
+
+            {
+                winner === null ? null : (
+                    <>
+                        <button className="outlined-pill px-8 py-3 hover:bg-sand-yellow-bright w-full max-w-[200px] mb-4" onClick={onNewRoundClick}>New Round</button>
+                        <button className="outlined-pill px-8 py-3 !bg-white !text-slate-blue border-0 hover:opacity-90  w-full max-w-[200px]" onClick={onQuitClick}>Quit</button>
+                    </>
+                )
+            }
 
             {/* Player 1 */}
             <div className={`fixed w-[230px] left-0 bottom-0 flex items-center gap-3 text-slate-blue bg-white p-6 font-chelsea rounded-tr-3xl border-t-4 border-r-4 border-dull-blue ${winner !== null && winner.player === 'O' ? '!bg-mint !border-deep-purple' : (winner !== null || turn !== 'O' ? 'opacity-50' : '')}`}>
